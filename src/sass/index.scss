@@ -1,0 +1,80 @@
+@import '~shards-ui/src/scss/shards';
+@import '~bootstrap/scss/bootstrap';
+
+// Variables
+$white: #fff;
+$dark-grey: #333;
+
+// General
+html, body {
+  height: 100%;
+}
+
+// Page loader
+.loader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: $white;
+  z-index: 1500;
+  transition: opacity 500ms ease-in-out;
+}
+
+.page-loader {
+  width: 40px;
+  height: 40px;
+  margin: auto;
+  top: 50%;
+  left: 50%;
+  position: absolute;
+  margin-top: -20px;
+  margin-left: -20px;
+  background-color: $dark-grey;
+  background: theme-color("primary");
+  border-radius: 100%;
+  transition-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+  -webkit-animation: pulse-load 1200ms infinite ease-in-out;
+  animation: pulse-load 1200ms infinite ease-in-out;
+}
+
+@-webkit-keyframes pulse-load {
+  0% {
+    -webkit-transform: scale(0)
+  }
+  100% {
+    -webkit-transform: scale(1.0);
+    opacity: 0;
+  }
+}
+
+@keyframes pulse-load {
+  0% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  }
+  100% {
+    -webkit-transform: scale(1.0);
+    transform: scale(1.0);
+    opacity: 0;
+  }
+}
+
+// Card
+.main-card {
+  height: 36rem;
+  overflow-y: hidden;
+
+  .account {
+    right: 1rem;
+  }
+
+  .card-body {
+    overflow-y: auto;
+  }
+
+  .custom-select {
+    background: $white;
+  }
+}
