@@ -61,6 +61,10 @@ export async function getAllTokenBalancesAndAllowancesAsync() {
   });
 }
 
+/**
+ * Fetch token balances and allowances and
+ * update the html table
+ */
 export async function updateTokensAndTableAsync() {
   const tokenData = await getAllTokenBalancesAndAllowancesAsync();
   createTokensTable(tokenData);
