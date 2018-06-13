@@ -1,33 +1,36 @@
-import { RadarRelay } from '@radarrelay/sdk';
+import { SdkManager } from '@radarrelay/sdk';
 import { InjectedWalletType } from '@radarrelay/sdk/dist/types';
-import { updateBalancesAndTableAsync } from './balances';
+import { updateTokensAndTableAsync } from './tokens';
 import { watchActiveAddress } from './account';
+import { populateTokenDropdowns } from './trade';
+import { Sdk } from './Sdk';
 
 export default class Main {
+
+  // Selectors
+  private readonly loaderSelector = '.loader';
 
   /**
    * Initialize the Radar Relay SDK
    */
-  public async initializeSdkAsync(): Promise<RadarRelay> {
+  public async initializeSdkAsync(): Promise<void> {
     try {
       // Instantiate the sdk
-      const rr = new RadarRelay({
-        endpoint: 'https://api-beta.rrdev.io/v0',
-        websocketEndpoint: 'wss://api-beta.rrdev.io/ws',
-        sdkInitializationTimeout: 30000
-      });
+      Sdk.Instance = SdkManager.Setup({
+          endpoint: '',
+          websocketEndpoint: '',
+          sdkInitializationTimeoutMs: 30000
+        },
+        {
+          type: InjectedWalletType.Metmask
+        }
+      );
 
       // Start Polling once the account is initialized
-      this.initializeBalancesAndAccountPolling(rr);
+      this.initializeBalancesAndAccountPolling();
 
       // Initialize the sdk with the injected wallet params
-      await rr.initialize({
-        type: InjectedWalletType.Metmask,
-        web3: (window as any).web3,
-        dataRpcUrl: 'https://kovan.infura.io'
-      });
-
-      return rr;
+      await SdkManager.InitializeAsync(Sdk.Instance);
     } catch (err) {
       console.log(err);
     }
@@ -37,15 +40,18 @@ export default class Main {
    * Initialize balance and account polling
    * @param rr The sdk instance
    */
-  initializeBalancesAndAccountPolling(rr: RadarRelay) {
-    rr.events.on('accountInitialized', async () => {
+  initializeBalancesAndAccountPolling() {
+    Sdk.Instance.events.on('accountInitialized', async () => {
       // Update balances
-      await updateBalancesAndTableAsync(rr);
+      await updateTokensAndTableAsync();
+
+      // Populate Token Dropdowns
+      populateTokenDropdowns();
 
       // Hide Loader
-      $('.loader').hide();
+      $(this.loaderSelector).hide();
 
-      watchActiveAddress(rr);
-  });
+      watchActiveAddress();
+    });
   }
 }

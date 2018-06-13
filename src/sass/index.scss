@@ -70,8 +70,26 @@ html, body {
     right: 1rem;
   }
 
-  .card-body {
-    overflow-y: auto;
+  .table-fixed {
+    width: unset;
+
+    thead, tbody {
+      display: block;
+    }
+
+    tbody {
+      height: 18.3rem;
+      overflow-y: auto;
+    }
+
+    th, td {
+      vertical-align: middle;
+      padding: .9rem 1.2rem;
+
+      .custom-toggle {
+        margin-left: 1.2rem;
+      }
+    }
   }
 
   .custom-select {

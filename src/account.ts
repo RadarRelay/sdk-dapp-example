@@ -1,28 +1,29 @@
-import { RadarRelay } from '@radarrelay/sdk';
-import { updateBalancesAndTableAsync } from './balances';
+import { updateTokensAndTableAsync } from './tokens';
+import { Sdk } from './Sdk';
+
+// Selectors
+const activeAddressSelector = '#active-address';
+const loaderSelector = '.loader';
+
 
 /**
  * Watch the active address. Update the balances
  * and address in the UI id changed
  */
-export function watchActiveAddress(rr: RadarRelay) {
-  const web3 = (window as any).web3;
-  rr.account.address = web3.eth.accounts[0];
-  $('#active-address').text(rr.account.address);
+export function watchActiveAddress() {
+  // Set address in UI
+  $(activeAddressSelector).text(Sdk.Instance.account.address);
 
-  setInterval(async function() {
-    if (web3.eth.accounts[0] !== rr.account.address) {
-      rr.account.address = web3.eth.accounts[0];
-      $('#active-address').text(rr.account.address);
+  Sdk.Instance.events.on('addressChanged', async (address: string) => {
+    $(activeAddressSelector).text(address || 'None');
 
-      // Show Loader
-      $('.loader').show();
+    // Show Loader
+    $(loaderSelector).show();
 
-      // Update balances
-      await updateBalancesAndTableAsync(rr);
+    // Update balances and allowances
+    await updateTokensAndTableAsync();
 
-      // Hide Loader
-      $('.loader').hide();
-    }
-  }, 100);
+    // Hide Loader
+    $(loaderSelector).hide();
+  });
 }
