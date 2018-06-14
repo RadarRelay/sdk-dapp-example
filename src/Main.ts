@@ -17,10 +17,10 @@ export default class Main {
     try {
       // Instantiate the sdk
       Sdk.Instance = SdkManager.Setup({
-          endpoint: '',
-          websocketEndpoint: '',
-          sdkInitializationTimeoutMs: 30000
-        },
+        endpoint: '',
+        websocketEndpoint: '',
+        sdkInitializationTimeoutMs: 30000
+      },
         {
           type: InjectedWalletType.Metmask
         }
