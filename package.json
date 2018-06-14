@@ -18,6 +18,7 @@
   "license": "MIT",
   "author": "Radar Relay<dev@radarrelay.com>",
   "devDependencies": {
+    "@types/bootstrap": "^4.1.0",
     "@types/jasmine": "^2.5.53",
     "@types/jquery": "^3.3.2",
     "@types/lodash": "^4.14.70",

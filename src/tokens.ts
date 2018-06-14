@@ -5,6 +5,27 @@ import { BigNumber } from 'bignumber.js';
 const tokenBalancesSelector = '#token-balances';
 const allowanceToggleSelector = '.allowance-toggle';
 const tableFixedSelector = '.table-fixed';
+const wrapModalSelector = '#wrapModal';
+const wrapEthAmountSelector = '#wrap-amount';
+const wrapEthButtonSelector = '#wrap-eth-button';
+
+// Wrap button clicked
+$(wrapEthButtonSelector).click(wrapEthAsync);
+
+/**
+ * Wrap the amount
+ * @param e The toggle clicked event
+ */
+export async function wrapEthAsync() {
+  try {
+    const wrapAmount = $(wrapEthAmountSelector).val() as string;
+    await Sdk.Instance.account.wrapEthAsync(new BigNumber(wrapAmount), { awaitTransactionMined: true });
+    await updateTokensAndTableAsync();
+    $(wrapModalSelector).modal('hide');
+  } catch (err) {
+    console.log(err);
+  }
+}
 
 /**
  * Toggle a tokens allowance and update the UI
@@ -90,7 +111,7 @@ function createTokensTable(tokenData: {}) {
 
   // Enable tooltips on page
   $(function () {
-    ($('[data-toggle="tooltip"]') as any).tooltip();
+    $('[data-toggle="tooltip"]').tooltip();
   })
 
   // Populate table
@@ -100,7 +121,7 @@ function createTokensTable(tokenData: {}) {
     $(tr.insertCell()).attr('align', 'middle').html(tokenData[key].balance.toFixed(7).replace(/\.0+$|(\.\d*[1-9])(0+)$/, '')); // Token Balance
 
     if (key === 'ETH') {
-      $(tr.insertCell()).html('<button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="left" title="Wrap ETH">Wrap</button>');
+      $(tr.insertCell()).html('<span data-toggle="modal" data-target="#wrapModal"><button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="left" title="Wrap ETH">Wrap</button></span>');
     } else {
       $(tr.insertCell()).html(`
         <div class="custom-control custom-toggle my-2" data-toggle="tooltip" data-placement="left"
