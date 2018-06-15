@@ -53,7 +53,7 @@
     "webpack-dev-server": "2.5.1"
   },
   "dependencies": {
-    "@radarrelay/sdk": "^0.3.0",
+    "@radarrelay/sdk": "^0.4.1",
     "@radarrelay/types": "^0.1.1",
     "babel-loader": "^7.1.4",
     "bignumber.js": "^4.1.0",

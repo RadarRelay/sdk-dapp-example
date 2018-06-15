@@ -19,11 +19,16 @@ $(wrapEthButtonSelector).click(wrapEthAsync);
 export async function wrapEthAsync() {
   try {
     const wrapAmount = $(wrapEthAmountSelector).val() as string;
+    if (!wrapAmount || wrapAmount === '0') {
+      alert('Please enter a valid number');
+      return;
+    }
+
     await Sdk.Instance.account.wrapEthAsync(new BigNumber(wrapAmount), { awaitTransactionMined: true });
     await updateTokensAndTableAsync();
     $(wrapModalSelector).modal('hide');
   } catch (err) {
-    console.log(err);
+    alert(err.message);
   }
 }
 
@@ -54,13 +59,13 @@ export async function getAllTokenBalancesAndAllowancesAsync() {
   const tokenData = {};
   const total = Sdk.Instance.tokens.size();
 
-  // get ETH balance
-  const ethBal = await Sdk.Instance.account.getEthBalanceAsync();
+  // Get ETH balance
+  const ethBalance = await Sdk.Instance.account.getEthBalanceAsync();
   tokenData['ETH'] = {
-    balance: ethBal.toNumber()
+    balance: ethBalance.toNumber()
   };
 
-  // get all token balances
+  // Get all token balances
   return new Promise(async resolve => {
     let current = 0;
     Sdk.Instance.tokens.forEach(async token => {
@@ -71,7 +76,7 @@ export async function getAllTokenBalancesAndAllowancesAsync() {
         tokenData[token.symbol] = {
           address: token.address,
           balance: balance.toNumber(),
-          allowance: allowance.greaterThan(0) ? true : false
+          allowance: allowance.greaterThan(balance) ? true : false
         }
       }
       current += 1;

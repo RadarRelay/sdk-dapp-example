@@ -1,5 +1,4 @@
-import { SdkManager } from '@radarrelay/sdk';
-import { InjectedWalletType } from '@radarrelay/sdk/dist/types';
+import { SdkManager, InjectedWalletType, EventName } from '@radarrelay/sdk';
 import { updateTokensAndTableAsync } from './tokens';
 import { watchActiveAddress } from './account';
 import { populateTokenDropdowns } from './trade';
@@ -17,14 +16,9 @@ export default class Main {
     try {
       // Instantiate the sdk
       Sdk.Instance = SdkManager.Setup({
-        endpoint: '',
-        websocketEndpoint: '',
+        type: InjectedWalletType.Metmask,
         sdkInitializationTimeoutMs: 30000
-      },
-        {
-          type: InjectedWalletType.Metmask
-        }
-      );
+      });
 
       // Start Polling once the account is initialized
       this.initializeBalancesAndAccountPolling();
@@ -38,10 +32,9 @@ export default class Main {
 
   /**
    * Initialize balance and account polling
-   * @param rr The sdk instance
    */
   initializeBalancesAndAccountPolling() {
-    Sdk.Instance.events.on('accountInitialized', async () => {
+    Sdk.Instance.events.on(EventName.AccountInitialized, async () => {
       // Update balances
       await updateTokensAndTableAsync();
 

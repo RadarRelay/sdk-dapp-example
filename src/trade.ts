@@ -93,12 +93,17 @@ function calculateQuoteTokenAmount(baseTokenAmount: BigNumber, quoteTokenAmount:
  */
 export async function exchangeAsync() {
   try {
-    const orderType = $(orderTypeSelector).val() as string;
-    const baseTokenAmount = $(baseTokenAmountSelector).val() as string;
-    const market = Sdk.Instance.markets.get(`${$(baseTokenSelectSelector).val()}-${$(quoteTokenSelectSelector).val()}`);
-    const txReceipt = await market.marketOrderAsync(UserOrderType[orderType], new BigNumber(baseTokenAmount), { awaitTransactionMined: true });
-
-    console.log(txReceipt);
+    if (Sdk.Instance.markets) {
+      const baseTokenAmount = $(baseTokenAmountSelector).val() as string;
+      if (!baseTokenAmount || baseTokenAmount === '0') {
+        alert('Please enter a base token amount');
+        return;
+      }
+      const orderType = $(orderTypeSelector).val() as string;
+      const market = Sdk.Instance.markets.get(`${$(baseTokenSelectSelector).val()}-${$(quoteTokenSelectSelector).val()}`);
+      const txReceipt = await market.marketOrderAsync(UserOrderType[orderType], new BigNumber(baseTokenAmount), { awaitTransactionMined: true });
+      alert(`Transaction Sucessful: ${txReceipt}`);
+    }
   } catch (err) {
     alert(err.message);
   }

@@ -1,5 +1,6 @@
 import { updateTokensAndTableAsync } from './tokens';
 import { Sdk } from './Sdk';
+import { EventName } from '@radarrelay/sdk';
 
 // Selectors
 const activeAddressSelector = '#active-address';
@@ -14,7 +15,7 @@ export function watchActiveAddress() {
   // Set address in UI
   $(activeAddressSelector).text(Sdk.Instance.account.address);
 
-  Sdk.Instance.events.on('addressChanged', async (address: string) => {
+  Sdk.Instance.events.on(EventName.AddressChanged, async (address: string) => {
     $(activeAddressSelector).text(address || 'None');
 
     // Show Loader
