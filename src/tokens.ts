@@ -42,9 +42,12 @@ export async function toggleAllowanceAsync(e: JQuery.Event<HTMLInputElement>) {
 
   try {
     const { name, id, checked } = e.currentTarget;
-    const newAllowance = checked ? new BigNumber(Sdk.Instance.zeroEx.token.UNLIMITED_ALLOWANCE_IN_BASE_UNITS) : new BigNumber(0);
 
-    await Sdk.Instance.account.setTokenAllowanceAsync(name, newAllowance, { awaitTransactionMined: true });
+    if (checked) {
+      await Sdk.Instance.account.setUnlimitedTokenAllowanceAsync(name, { awaitTransactionMined: true });
+    } else {
+      await Sdk.Instance.account.setTokenAllowanceAsync(name, new BigNumber(0), { awaitTransactionMined: true });
+    }
     $(`#${id}`).prop('checked', checked).closest('div').attr('data-original-title', checked ? 'Disable Token' : 'Enable Token');
   } catch (err) {
     console.log(err);
