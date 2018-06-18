@@ -8,6 +8,7 @@ const tableFixedSelector = '.table-fixed';
 const wrapModalSelector = '#wrapModal';
 const wrapEthAmountSelector = '#wrap-amount';
 const wrapEthButtonSelector = '#wrap-eth-button';
+const spinnerSelector = '.spinner';
 
 // Wrap button clicked
 $(wrapEthButtonSelector).click(wrapEthAsync);
@@ -24,11 +25,15 @@ export async function wrapEthAsync() {
       return;
     }
 
+    $(spinnerSelector).show();
+
     await Sdk.Instance.account.wrapEthAsync(new BigNumber(wrapAmount), { awaitTransactionMined: true });
     await updateTokensAndTableAsync();
     $(wrapModalSelector).modal('hide');
+    $(spinnerSelector).hide();
   } catch (err) {
     alert(err.message);
+    $(spinnerSelector).hide();
   }
 }
 
@@ -42,12 +47,19 @@ export async function toggleAllowanceAsync(e: JQuery.Event<HTMLInputElement>) {
 
   try {
     const { name, id, checked } = e.currentTarget;
-    const newAllowance = checked ? new BigNumber(Sdk.Instance.zeroEx.token.UNLIMITED_ALLOWANCE_IN_BASE_UNITS) : new BigNumber(0);
 
-    await Sdk.Instance.account.setTokenAllowanceAsync(name, newAllowance, { awaitTransactionMined: true });
+    $(spinnerSelector).show();
+
+    if (checked) {
+      await Sdk.Instance.account.setUnlimitedTokenAllowanceAsync(name, { awaitTransactionMined: true });
+    } else {
+      await Sdk.Instance.account.setTokenAllowanceAsync(name, new BigNumber(0), { awaitTransactionMined: true });
+    }
     $(`#${id}`).prop('checked', checked).closest('div').attr('data-original-title', checked ? 'Disable Token' : 'Enable Token');
+    $(spinnerSelector).hide();
   } catch (err) {
     console.log(err);
+    $(spinnerSelector).hide();
   }
 }
 

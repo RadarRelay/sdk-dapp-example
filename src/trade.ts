@@ -11,6 +11,7 @@ const baseTokenAmountSelector = '#base-token-amount';
 const quoteTokenAmountSelector = '#quote-token-amount';
 const orderTypeSelector = '#order-type';
 const exchangeButtonSelector = '#exchange-button';
+const spinnerSelector = '.spinner';
 
 
 // Tokens changed - Update book and amounts
@@ -99,12 +100,19 @@ export async function exchangeAsync() {
         alert('Please enter a base token amount');
         return;
       }
+
+      $(spinnerSelector).show();
+
       const orderType = $(orderTypeSelector).val() as string;
       const market = Sdk.Instance.markets.get(`${$(baseTokenSelectSelector).val()}-${$(quoteTokenSelectSelector).val()}`);
       const txReceipt = await market.marketOrderAsync(UserOrderType[orderType], new BigNumber(baseTokenAmount), { awaitTransactionMined: true });
-      alert(`Transaction Sucessful: ${txReceipt}`);
+
+      $(spinnerSelector).hide();
+
+      alert(`Transaction Sucessful: ${(txReceipt as any).transactionHash}`);
     }
   } catch (err) {
     alert(err.message);
+    $(spinnerSelector).hide();
   }
 }
