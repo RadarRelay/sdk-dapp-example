@@ -55,7 +55,7 @@
     "webpack-dev-server": "2.5.1"
   },
   "dependencies": {
-    "@radarrelay/sdk": "^0.4.2",
+    "@radarrelay/sdk": "^0.4.3",
     "@radarrelay/types": "^0.1.1",
     "bignumber.js": "^4.1.0",
     "bootstrap": "4.0.0",
