@@ -69,7 +69,7 @@ export async function toggleAllowanceAsync(e: JQuery.Event<HTMLInputElement>) {
  */
 export async function getAllTokenBalancesAndAllowancesAsync() {
   const tokenData = {};
-  const total = Sdk.Instance.tokens.size();
+  const total = Sdk.Instance.tokens.size;
 
   // Get ETH balance
   const ethBalance = await Sdk.Instance.account.getEthBalanceAsync();

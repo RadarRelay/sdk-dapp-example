@@ -46,7 +46,7 @@ export function populateTokenDropdowns() {
  * Update the book when the market changes
  */
 export async function updateBookAsync() {
-  const market = Sdk.Instance.markets.get(`${$(baseTokenSelectSelector).val()}-${$(quoteTokenSelectSelector).val()}`);
+  const market = await Sdk.Instance.markets.getAsync(`${$(baseTokenSelectSelector).val()}-${$(quoteTokenSelectSelector).val()}`);
   currentOrderBook = await market.getBookAsync();
 }
 
@@ -104,7 +104,7 @@ export async function exchangeAsync() {
       $(spinnerSelector).show();
 
       const orderType = $(orderTypeSelector).val() as string;
-      const market = Sdk.Instance.markets.get(`${$(baseTokenSelectSelector).val()}-${$(quoteTokenSelectSelector).val()}`);
+      const market = await Sdk.Instance.markets.getAsync(`${$(baseTokenSelectSelector).val()}-${$(quoteTokenSelectSelector).val()}`);
       const txReceipt = await market.marketOrderAsync(UserOrderType[orderType], new BigNumber(baseTokenAmount), { awaitTransactionMined: true });
 
       $(spinnerSelector).hide();
